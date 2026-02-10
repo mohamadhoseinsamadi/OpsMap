@@ -2,50 +2,6 @@
 
 A real-time collaborative mapping application for operational management and coordination.
 
-## 📁 Project Structure
-OpsMap/
-├── client/ # JavaFX Client Application
-│ ├── MainClient.java # Main entry point
-│ ├── network/ # Network communication
-│ │ ├── ClientConnection.java
-│ │ └── MessageListener.java
-│ ├── controller/ # MVC Controllers
-│ │ ├── LoginController.java
-│ │ └── MainController.java
-│ ├── ui/ # JavaFX UI Files
-│ │ ├── login.fxml
-│ │ └── main.fxml
-│ └── model/ # Client-side models
-│
-├── server/ # Multi-threaded Server
-│ ├── MainServer.java # Server entry point
-│ ├── ClientHandler.java # Handles client connections
-│ ├── auth/ # Authentication system
-│ │ └── AuthManager.java
-│ ├── manager/ # Client management
-│ │ └── ClientManager.java
-│ └── storage/ # Data persistence
-│ ├── UserStore.java
-│ └── MapStorage.java
-│
-├── shared/ # Shared between client & server
-│ ├── message/ # Communication protocol
-│ │ ├── Message.java
-│ │ ├── MessageType.java
-│ │ └── ErrorPayload.java
-│ └── model/ # Data models
-│ ├── User.java
-│ ├── Route.java
-│ ├── Marker.java
-│ ├── RegionShape.java
-│ ├── RectangleRegion.java
-│ ├── MapState.java
-│ ├── MousePosition.java
-│ └── ChatMessage.java
-│
-└── README.md
-
-text
 
 ## 🚀 Features (Implemented in Full Project)
 
@@ -145,5 +101,4 @@ Educational Project - University Assignment
 
 ---
 **Advanced Programming Course Project**  
-*University of [Your University]*  
-*Semester: [Semester/Year]*
+
