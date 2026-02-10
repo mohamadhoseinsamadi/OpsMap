@@ -1,2 +1,17 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<!-- FXML structure - Content omitted -->
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" alignment="CENTER"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="client.controller.LoginController">
+    <Label text="Ops Map Login" style="-fx-font-size: 18"/>
+    <TextField fx:id="usernameField" promptText="Username"/>
+    <ComboBox fx:id="roleBox"/>
+    <HBox spacing="10">
+        <Button text="Login" onAction="#onLogin"/>
+        <Button text="Register" onAction="#onRegister"/>
+    </HBox>
+    <Label fx:id="errorLabel" style="-fx-text-fill: red"/>
+</VBox>
