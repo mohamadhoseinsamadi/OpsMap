@@ -1,5 +1,7 @@
-﻿package client.network.MessageListener;
+﻿package client.network;
 
-public class MessageListener {
+import shared.message.Message;
+
+public interface MessageListener {
+    void onMessage(Message message);
 }
-
