@@ -1,4 +1,4 @@
-﻿package server.auth.AuthManager;
+package server.auth;
 
 import server.storage.UserStore;
 
