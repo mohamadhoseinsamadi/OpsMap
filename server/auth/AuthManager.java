@@ -1,26 +1,36 @@
-﻿package server.auth.AuthManager;
+package server.auth;
 
 import server.storage.UserStore;
+import shared.model.User;
 
 public class AuthManager {
     private static AuthManager instance = new AuthManager();
     private UserStore store = new UserStore();
 
-    private AuthManager() {
-    }
+    private AuthManager() {}
 
     public static AuthManager getInstance() {
         return instance;
     }
 
-    public boolean login(String username) {
-        return store.userExists(username);
+ 
+    public User login(String username, String password) {
+        if (!store.validate(username, password)) {
+            return null;
+        }
+        String role = store.getRole(username);
+        if (role == null) {
+            return null;
+        }
+        
+        return new User(username, role, "");
     }
 
-    public boolean register(String username) {
-        if (store.userExists(username))
+    public boolean register(String username, String password, String role) {
+        if (store.userExists(username)) {
             return false;
-        store.addUser(username);
+        }
+        store.addUser(username, password, role);
         return true;
     }
 }
