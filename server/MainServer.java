@@ -1,4 +1,4 @@
-﻿package server.MainServer;
+package server;
 
 import server.manager.ClientManager;
 import java.io.IOException;
@@ -9,13 +9,11 @@ public class MainServer {
     public static final int PORT = 5000;
 
     public static void main(String[] args) {
-        System.out.println("Ops Map Server starting...");
         ClientManager clientManager = new ClientManager();
-
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("Server started on port " + PORT);
             while (true) {
                 Socket socket = serverSocket.accept();
-                System.out.println("New client connected");
                 ClientHandler handler = new ClientHandler(socket, clientManager);
                 handler.start();
             }
