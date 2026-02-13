@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<VBox spacing="10" alignment="CENTER"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="client.controller.LoginController"
+      style="-fx-padding: 30;">
+    <Label text="Ops Map Login" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+    <TextField fx:id="usernameField" promptText="Username" maxWidth="200"/>
+    <PasswordField fx:id="passwordField" promptText="Password" maxWidth="200"/>
+    <ComboBox fx:id="roleBox" maxWidth="200"/>
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Login" onAction="#onLogin" defaultButton="true"/>
+        <Button text="Register" onAction="#onRegister"/>
+    </HBox>
+    <Label fx:id="errorLabel" style="-fx-text-fill: red;" wrapText="true" maxWidth="300"/>
+</VBox>

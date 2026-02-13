@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.paint.Color?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="client.controller.MainController">
+    <left>
+        <VBox spacing="5" style="-fx-padding: 10;">
+            <Label text="🗺️ Tools" style="-fx-font-weight: bold;"/>
+            <ToggleButton fx:id="routeToolBtn" text="✏️ Route" maxWidth="Infinity"/>
+            <ToggleButton fx:id="markerToolBtn" text="📍 Marker" maxWidth="Infinity"/>
+            <ToggleButton fx:id="regionToolBtn" text="🔲 Region" maxWidth="Infinity"/>
+
+            <Separator/>
+            <Label text="Marker Type"/>
+            <ChoiceBox fx:id="markerTypeBox" maxWidth="Infinity"/>
+
+            <Label text="Region Shape"/>
+            <ChoiceBox fx:id="shapeTypeBox" maxWidth="Infinity"/>
+
+            <Label text="Color"/>
+            <ColorPicker fx:id="colorPicker" value="RED" maxWidth="Infinity"/>
+
+            <Label text="Line Thickness"/>
+            <Slider fx:id="thicknessSlider" maxWidth="Infinity"/>
+
+            <Separator/>
+            <Button fx:id="deleteSelectedBtn" text="❌ Delete Selected" onAction="#deleteSelected" maxWidth="Infinity"/>
+            <Button fx:id="loadBgBtn" text="🖼️ Load Background" onAction="#loadBackground" maxWidth="Infinity"/>
+
+            <Separator/>
+            <HBox spacing="5">
+                <Button text="💾 Save Map" onAction="#onSave" maxWidth="Infinity"/>
+                <Button text="📂 Load Map" onAction="#onLoad" maxWidth="Infinity"/>
+            </HBox>
+        </VBox>
+    </left>
+    <center>
+        <Pane fx:id="mapPane" style="-fx-background-color: #2b2b2b;"/>
+    </center>
+    <right>
+        <VBox spacing="5" style="-fx-padding: 10;" prefWidth="200">
+            <Label text="👥 Online Users" style="-fx-font-weight: bold;"/>
+            <ListView fx:id="userList" prefHeight="150"/>
+            <Label text="💬 Chat" style="-fx-font-weight: bold;"/>
+            <ListView fx:id="chatList" prefHeight="200"/>
+            <TextField fx:id="chatInput" onAction="#sendChat" promptText="Type a message..."/>
+        </VBox>
+    </right>
+</BorderPane>

@@ -4,7 +4,6 @@ public enum MessageType {
     LOGIN,
     REGISTER,
     LOGIN_SUCCESS,
-    LOGIN_FAILED,
     DRAW_ROUTE,
     ADD_MARKER,
     ADD_REGION,
