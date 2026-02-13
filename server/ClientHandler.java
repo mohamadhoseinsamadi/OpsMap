@@ -7,7 +7,8 @@ import server.storage.MapStorage;
 import shared.message.ErrorPayload;
 import shared.message.Message;
 import shared.message.MessageType;
-import shared.model.*;
+import shared.model.User;
+import shared.model.MapState;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -25,7 +26,6 @@ public class ClientHandler extends Thread {
         this.clientManager = manager;
     }
 
-    @Override
     public void run() {
         try {
             out = new ObjectOutputStream(socket.getOutputStream());
@@ -36,7 +36,7 @@ public class ClientHandler extends Thread {
                 handleMessage(message);
             }
         } catch (Exception e) {
-
+            // client disconnected
         } finally {
             try {
                 if (user != null) {
@@ -45,22 +45,12 @@ public class ClientHandler extends Thread {
                     clientManager.broadcast(new Message(MessageType.USER_LIST, clientManager.getUsers()), null);
                 }
                 socket.close();
-            } catch (Exception e) {
-
-            }
+            } catch (Exception e) {}
         }
     }
 
     private void handleMessage(Message msg) throws IOException {
         try {
-
-            if (msg.getType() != MessageType.LOGIN &&
-                    msg.getType() != MessageType.REGISTER &&
-                    user == null) {
-                sendError("UNAUTHORIZED", "You must be logged in to perform this action.");
-                return;
-            }
-
             switch (msg.getType()) {
                 case LOGIN:
                     handleLogin(msg);
@@ -69,22 +59,21 @@ public class ClientHandler extends Thread {
                     handleRegister(msg);
                     break;
                 case DRAW_ROUTE:
-                    Route route = (Route) msg.getPayload();
-                    MapStateManager.getInstance().addRoute(route);
+                    MapStateManager.getInstance().addRoute((shared.model.Route) msg.getPayload());
                     clientManager.broadcast(msg, this);
                     break;
                 case ADD_MARKER:
-                    Marker marker = (Marker) msg.getPayload();
-                    MapStateManager.getInstance().addMarker(marker);
+                    MapStateManager.getInstance().addMarker((shared.model.Marker) msg.getPayload());
                     clientManager.broadcast(msg, this);
                     break;
                 case ADD_REGION:
-                    RegionShape region = (RegionShape) msg.getPayload();
-                    MapStateManager.getInstance().addRegion(region);
+                    MapStateManager.getInstance().addRegion((shared.model.RegionShape) msg.getPayload());
                     clientManager.broadcast(msg, this);
                     break;
                 case REMOVE_OBJECT:
-                    handleRemoveObject(msg);
+                    String id = (String) msg.getPayload();
+                    MapStateManager.getInstance().removeObject(id);
+                    clientManager.broadcast(msg, this);
                     break;
                 case MOUSE_MOVE:
                 case CHAT:
@@ -98,7 +87,13 @@ public class ClientHandler extends Thread {
                     }
                     break;
                 case LOAD_STATE:
-                    handleLoadState();
+                    try {
+                        MapState loaded = MapStorage.load();
+                        MapStateManager.getInstance().setCurrentState(loaded);
+                        send(new Message(MessageType.MAP_STATE, loaded));
+                    } catch (Exception e) {
+                        sendError("LOAD_FAILED", "Could not load map: " + e.getMessage());
+                    }
                     break;
                 default:
                     clientManager.broadcast(msg, this);
@@ -109,64 +104,13 @@ public class ClientHandler extends Thread {
         }
     }
 
-
-    private void handleRemoveObject(Message msg) throws IOException {
-        String id = (String) msg.getPayload();
-        MapState state = MapStateManager.getInstance().getCurrentState();
-        String owner = findOwnerById(id, state);
-
-        if (owner == null) {
-            sendError("NOT_FOUND", "Object with id " + id + " does not exist.");
-            return;
-        }
-
-        if (!user.getUsername().equals(owner) && !"Commander".equals(user.getRole())) {
-            sendError("FORBIDDEN", "You don't have permission to delete this object.");
-            return;
-        }
-
-        boolean removed = MapStateManager.getInstance().removeObject(id);
-        if (removed) {
-            clientManager.broadcast(msg, this);
-        } else {
-            sendError("REMOVE_FAILED", "Could not remove object (already deleted?)");
-        }
-    }
-
-
-    private void handleLoadState() throws IOException {
-        try {
-            MapState loaded = MapStorage.load();
-            MapStateManager.getInstance().setCurrentState(loaded);
-            send(new Message(MessageType.MAP_STATE, loaded));
-            clientManager.broadcast(new Message(MessageType.MAP_STATE, loaded), null);
-        } catch (Exception e) {
-            sendError("LOAD_FAILED", "Could not load map: " + e.getMessage());
-        }
-    }
-
-
-    private String findOwnerById(String id, MapState state) {
-        for (Marker m : state.getMarkers()) {
-            if (m.getId().equals(id)) return m.getOwner();
-        }
-        for (RegionShape r : state.getRegions()) {
-            if (r.getId().equals(id)) return r.getOwner();
-        }
-        for (Route r : state.getRoutes()) {
-            if (r.getId().equals(id)) return r.getOwner();
-        }
-        return null;
-    }
-
     private void handleLogin(Message msg) throws IOException {
         AuthManager auth = AuthManager.getInstance();
         User u = (User) msg.getPayload();
 
+        // Basic server-side validation of input (in addition to client-side checks)
         String username = u.getUsername() != null ? u.getUsername().trim() : "";
         String password = u.getPassword() != null ? u.getPassword().trim() : "";
-
-        // اعتبارسنجی ورودی
         if (username.length() < 3 || username.length() > 20) {
             sendError("LOGIN_INVALID", "Username must be 3-20 characters");
             return;
@@ -205,20 +149,9 @@ public class ClientHandler extends Thread {
             return;
         }
 
-        if (!"Commander".equals(role) && !"Operator".equals(role)) {
-            sendError("REGISTER_INVALID", "Role must be Commander or Operator");
-            return;
-        }
-
         if (auth.register(username, password, role)) {
-
-            User authenticated = auth.login(username, password);
-            this.user = authenticated;
-            clientManager.addClient(this);
-            send(new Message(MessageType.LOGIN_SUCCESS, this.user));
-            send(new Message(MessageType.MAP_STATE, MapStateManager.getInstance().getCurrentState()));
-            clientManager.broadcast(new Message(MessageType.USER_JOINED, this.user), this);
-            clientManager.broadcast(new Message(MessageType.USER_LIST, clientManager.getUsers()), null);
+            // After successful registration, respond with a sanitized user object
+            send(new Message(MessageType.LOGIN_SUCCESS, new User(username, role, "")));
         } else {
             sendError("REGISTER_FAILED", "Username already exists");
         }

@@ -32,7 +32,9 @@ public class UserStore {
         users.put(username, new UserRecord(username, password, role));
     }
 
-   
+    /**
+     * Returns the stored role for a given username or null if user does not exist.
+     */
     public String getRole(String username) {
         UserRecord r = users.get(username);
         return r != null ? r.role : null;

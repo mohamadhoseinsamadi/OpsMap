@@ -13,7 +13,10 @@ public class AuthManager {
         return instance;
     }
 
- 
+    /**
+     * Validates credentials and returns a User with the stored role if successful,
+     * otherwise returns null.
+     */
     public User login(String username, String password) {
         if (!store.validate(username, password)) {
             return null;
@@ -22,7 +25,7 @@ public class AuthManager {
         if (role == null) {
             return null;
         }
-        
+        // Do not expose password back to clients
         return new User(username, role, "");
     }
 

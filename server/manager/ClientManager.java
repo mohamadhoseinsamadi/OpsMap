@@ -28,7 +28,7 @@ public class ClientManager {
                     try {
                         c.send(msg);
                     } catch (IOException e) {
-                    
+                        // ignore
                     }
                 }
             }

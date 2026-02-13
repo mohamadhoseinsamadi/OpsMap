@@ -1,4 +1,4 @@
-﻿package client.network;
+package client.network;
 
 import shared.message.Message;
 

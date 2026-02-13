@@ -4,7 +4,6 @@ import shared.model.MapState;
 import shared.model.Route;
 import shared.model.Marker;
 import shared.model.RegionShape;
-import java.util.Iterator;
 
 public class MapStateManager {
     private static MapStateManager instance = new MapStateManager();
@@ -36,37 +35,9 @@ public class MapStateManager {
         currentState.addRegion(region);
     }
 
-    public synchronized boolean removeObject(String id) {
-        boolean removed = false;
-
-        Iterator<Marker> markerIt = currentState.getMarkers().iterator();
-        while (markerIt.hasNext()) {
-            if (markerIt.next().getId().equals(id)) {
-                markerIt.remove();
-                removed = true;
-                break;
-            }
-        }
-
-
-        Iterator<RegionShape> regionIt = currentState.getRegions().iterator();
-        while (regionIt.hasNext()) {
-            if (regionIt.next().getId().equals(id)) {
-                regionIt.remove();
-                removed = true;
-                break;
-            }
-        }
-
-        Iterator<Route> routeIt = currentState.getRoutes().iterator();
-        while (routeIt.hasNext()) {
-            if (routeIt.next().getId().equals(id)) {
-                routeIt.remove();
-                removed = true;
-                break;
-            }
-        }
-
-        return removed;
+    public void removeObject(String id) {
+        currentState.getMarkers().removeIf(m -> m.getId().equals(id));
+        currentState.getRegions().removeIf(r -> r.getId().equals(id));
+        // Routes don't have id, we ignore removal for simplicity
     }
 }
