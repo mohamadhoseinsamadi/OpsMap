@@ -1,0 +1,32 @@
+﻿# Compiled files
+*.class
+*.jar
+*.war
+
+# IDE files
+.idea/
+*.iml
+out/
+target/
+bin/
+.vscode/
+
+# Build tools
+.gradle/
+mvnw
+mvnw.cmd
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Data files
+*.dat
+*.db
+
+# Temporary files
+temp/
+tmp/

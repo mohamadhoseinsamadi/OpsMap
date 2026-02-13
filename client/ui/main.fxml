@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="client.controller.MainController">
+    <left>
+        <VBox spacing="5">
+            <Label text="Tools"/>
+            <ToggleButton fx:id="routeToolBtn" text="Route"/>
+            <ToggleButton fx:id="markerToolBtn" text="Marker"/>
+            <ToggleButton fx:id="regionToolBtn" text="Region"/>
+            <ChoiceBox fx:id="markerTypeBox"/>
+            <HBox spacing="5">
+                <Button text="Save Map" onAction="#onSave"/>
+                <Button text="Load Map" onAction="#onLoad"/>
+            </HBox>
+        </VBox>
+    </left>
+    <center>
+        <Pane fx:id="mapPane" style="-fx-background-color: lightgray"/>
+    </center>
+    <right>
+        <VBox spacing="5">
+            <ListView fx:id="userList"/>
+            <ListView fx:id="chatList"/>
+            <TextField fx:id="chatInput" onAction="#sendChat"/>
+        </VBox>
+    </right>
+</BorderPane>
