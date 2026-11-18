@@ -1,35 +1,57 @@
-## سامانه عملیاتی همکارانه (OpsMap)
+# OpsMap — Collaborative Operations Map
 
-این پروژه پیاده‌سازی ساده‌ای از سامانه عملیاتی همکارانه است که در آن چند کاربر می‌توانند روی یک نقشه مشترک به‌صورت بی‌درنگ کار کنند.
+A real-time collaborative mapping system: multiple users work on a shared operational map simultaneously, drawing routes, placing markers, defining regions, and chatting. Built as a Java client/server application with a JavaFX GUI.
 
-### اجزای اصلی
-- **سرور (`server`)**: مدیریت کاربران، احراز هویت، وضعیت نقشه و پخش پیام‌ها بین کلاینت‌ها.
-- **کلاینت (`client`)**: رابط گرافیکی JavaFX برای ورود/ثبت‌نام، نمایش نقشه و ابزارها.
-- **بخش مشترک (`shared`)**: مدل‌ها و انواع پیام‌ها که بین سرور و کلاینت به اشتراک گذاشته می‌شود.
+## Architecture
 
-### امکانات پیاده‌سازی‌شده
-- **ورود و ثبت‌نام کاربر** با نقش‌های `Commander` و `Operator` و احراز هویت ساده در حافظه.
-- **رسم مسیر عملیاتی** با انتخاب رنگ و ضخامت خط.
-- **افزودن نشانگر (Marker)** با انواع مختلف و رنگ‌های متفاوت.
-- **تعریف ناحیه (اشکال هندسی)** به صورت مستطیل و دایره.
-- **حذف اشیاء** (فقط توسط مالک یا کاربر با نقش Commander).
-- **دنبال‌کردن مکان‌نمای ماوس** سایر کاربران بر روی نقشه.
-- **چت متنی ساده** در کنار نقشه.
-- **ذخیره و بازیابی وضعیت نقشه (Save/Load State)** روی دیسک سمت سرور.
-- **مدیریت خطاها** و ارسال پیام‌های خطا به کلاینت با استفاده از `ErrorPayload`.
+- **`server/`** — user management, authentication, map state, and message broadcasting between clients.
+- **`client/`** — JavaFX graphical interface: login/signup, map display, and drawing tools.
+- **`shared/`** — models and message types shared between client and server.
 
-### پیش‌نیازها
-- Java 17 یا بالاتر (پیشنهادی)
-- JavaFX مناسب با نسخه JDK
+## Features
 
-### نحوه اجرا
-1. مخزن پروژه را کلون کنید یا پوشه را در IDE خود (IntelliJ IDEA و ...) باز کنید.
-2. **سرور** را اجرا کنید:
-   - کلاس `server.MainServer` را اجرا کنید.
-3. **کلاینت** را اجرا کنید:
-   - کلاس `client.MainClient` را اجرا کنید.
-   - چند بار اجرای کلاینت را تکرار کنید تا چند کاربر به سرور متصل شوند.
+- **User signup & login** with `Commander` and `Operator` roles (in-memory authentication).
+- **Route drawing** with configurable color and stroke width.
+- **Markers** of various types and colors.
+- **Regions** defined as rectangles or circles.
+- **Object deletion** restricted to the owner or a `Commander`.
+- **Live cursor tracking** — see other users' mouse positions on the map.
+- **Text chat** alongside the map.
+- **Save/load map state** persisted on the server.
+- **Error handling** with structured `ErrorPayload` messages sent to clients.
 
-اتصال کلاینت‌ها به صورت پیش‌فرض به `localhost` روی پورت `5000` انجام می‌شود. برای تغییر، می‌توانید در `LoginController` یا `MainServer` پورت/آدرس را تنظیم کنید.
+## Requirements
 
+- Java 17 or later
+- JavaFX SDK matching your JDK
 
+## Running
+
+1. Open the project in IntelliJ IDEA (or another Java IDE) and add the JavaFX SDK to the project libraries.
+2. Run the server: `server.MainServer`.
+3. Run the client: `client.MainClient`. Launch several client instances to simulate multiple users.
+
+Clients connect to `localhost:5000` by default. To change the address/port, edit `LoginController` (client side) or `MainServer` (server side).
+
+## Project Structure
+
+```
+client/
+  MainClient.java        # JavaFX entry point
+  controller/            # Login and main map controllers
+  network/               # Server connection and message listener
+  ui/                    # FXML layouts
+server/
+  MainServer.java        # Server entry point
+  ClientHandler.java     # Per-client connection handler
+  auth/                  # Authentication
+  manager/               # Client and map state management
+  storage/               # User store and map persistence
+shared/
+  message/               # Message, MessageType, ErrorPayload
+  model/                 # User, Route, Marker, regions, MapState, ...
+```
+
+## License
+
+MIT — see [LICENSE](LICENSE).
